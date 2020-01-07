@@ -37,6 +37,7 @@ import pyb
 import machine
 from ota_updater import OTAUpdater
 import ota_config
+from unm3_pybd import unm3pybd
 
 ota_modules = ['unm3_pybd']
 
@@ -79,7 +80,8 @@ def boot():
     start()
     
 def start():
-    app = Unm3Pybd()
+    unm3pybd.main()
+
 
 # Run boot()
 boot()
