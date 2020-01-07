@@ -35,9 +35,9 @@ import json
 import os
 import pyb
 import machine
-from ota_updater import OTAUpdater
+from ota_updater.main.ota_updater import OTAUpdater
 import ota_config
-from unm3_pybd import unm3pybd
+import unm3_pybd.main.unm3pybd as unm3pybd
 
 ota_modules = ['unm3_pybd']
 
@@ -70,7 +70,7 @@ def download_and_install_update_if_available():
     for ota_module in ota_modules:        
         ota_cfg = ota_config.load_ota_config(ota_module)
         if ota_cfg:
-            o = OTAUpdater(ota_cfg['gitrepos']['url'])
+            o = OTAUpdater(ota_cfg['gitrepos']['url'], ota_module)
             o.check_for_update_to_install_during_next_reboot()
             o.download_and_install_update_if_available(wifi_cfg['wifi']['ssid'], wifi_cfg['wifi']['password'])
 
