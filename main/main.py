@@ -37,9 +37,9 @@ import pyb
 import machine
 from ota_updater.main.ota_updater import OTAUpdater
 import ota_config
-import unm3_pybd.main.unm3pybd as unm3pybd
 
-ota_modules = ['unm3_pybd']
+ota_modules = ['unm3_pybd'] # unm3_pybd = MicroPython NM3 Driver
+# Add your own application module to this list.
 
 def load_wifi_config():
     '''Load Wifi Configuration from JSON file.
@@ -55,7 +55,7 @@ def load_wifi_config():
     return wifi_config
     
 
-def download_and_install_update_if_available():
+def download_and_install_updates_if_available():
     # Wifi Configuration
     wifi_cfg = load_wifi_config()
     if not wifi_cfg:
@@ -65,22 +65,35 @@ def download_and_install_update_if_available():
 
     # Open Wifi
     OTAUpdater.using_network(wifi_cfg['wifi']['ssid'], wifi_cfg['wifi']['password'])
-   
-    # Startup Load Configuration For Each Module
+
+    # Startup Load Configuration For Each Module and check for updates, download if available, then overwrite main/
     for ota_module in ota_modules:        
         ota_cfg = ota_config.load_ota_config(ota_module)
         if ota_cfg:
             o = OTAUpdater(ota_cfg['gitrepos']['url'], ota_module)
-            o.check_for_update_to_install_during_next_reboot()
-            o.download_and_install_update_if_available(wifi_cfg['wifi']['ssid'], wifi_cfg['wifi']['password'])
+            # download_updates_if_available - Checks version numbers and downloads into next/
+            o.download_updates_if_available()
+            # apply_pending_updates_if_available - Moves next/ into main/
+            o.apply_pending_updates_if_available()            
+
+    # Now need to reboot to make use of the updated modules
+    machine.reset()
 
 
 def boot():
-    download_and_install_update_if_available()
+    # Check reason for reset - only update if power on reset
+    if machine.reset_cause() == machine.PWRON_RESET:
+        download_and_install_updates_if_available()
+
+    # Start the main application
     start()
-    
+
 def start():
+    # Run the application. In this case we are using the example application included in the unm3_pybd module.
+    import unm3_pybd.main.unm3pybd as unm3pybd
     unm3pybd.main()
+    # This could be your own application included as part of your own module:
+    # yourapp.main()
 
 
 # Run boot()
