@@ -33,6 +33,7 @@
 import json
 import os
 
+
 def load_ota_config(module_name):
     '''Load OTA Configuration from JSON file.
     '''
@@ -45,4 +46,3 @@ def load_ota_config(module_name):
         pass
 
     return ota_config
-    

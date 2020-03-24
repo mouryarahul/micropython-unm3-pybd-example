@@ -38,8 +38,9 @@ import machine
 from ota_updater.main.ota_updater import OTAUpdater
 import ota_config
 
-ota_modules = ['unm3_pybd'] # unm3_pybd = MicroPython NM3 Driver
+ota_modules = ['unm3_pybd']  # unm3_pybd = MicroPython NM3 Driver
 # Add your own application module to this list.
+
 
 def load_wifi_config():
     '''Load Wifi Configuration from JSON file.
@@ -87,6 +88,7 @@ def boot():
 
     # Start the main application
     start()
+
 
 def start():
     # Run the application. In this case we are using the example application included in the unm3_pybd module.
