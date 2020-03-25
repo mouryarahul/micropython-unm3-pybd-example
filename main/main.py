@@ -53,6 +53,7 @@ def load_wifi_config():
     except Exception:
         pass
 
+    print("Loaded wifi_config: {}".format(wifi_config))
     return wifi_config
     
 
@@ -68,7 +69,7 @@ def download_and_install_updates_if_available():
     OTAUpdater.using_network(wifi_cfg['wifi']['ssid'], wifi_cfg['wifi']['password'])
 
     # Startup Load Configuration For Each Module and check for updates, download if available, then overwrite main/
-    for ota_module in ota_modules:        
+    for ota_module in ota_modules:
         ota_cfg = ota_config.load_ota_config(ota_module)
         if ota_cfg:
             o = OTAUpdater(ota_cfg['gitrepos']['url'], ota_module)
